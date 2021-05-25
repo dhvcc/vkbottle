@@ -273,7 +273,7 @@ class PayloadMapRule(ABCMessageRule):
 
     @classmethod
     def transform_to_map(cls, payload_map_dict: PayloadMapDict) -> PayloadMap:
-        """ Transforms PayloadMapDict to PayloadMap """
+        """Transforms PayloadMapDict to PayloadMap"""
         payload_map = []
         for (k, v) in payload_map_dict.items():
             if isinstance(v, dict):
@@ -283,7 +283,7 @@ class PayloadMapRule(ABCMessageRule):
 
     @classmethod
     def transform_to_callbacks(cls, payload_map: PayloadMap) -> PayloadMapStrict:
-        """ Transforms PayloadMap to PayloadMapStrict """
+        """Transforms PayloadMap to PayloadMapStrict"""
         for i, (key, value) in enumerate(payload_map):
             if isinstance(value, type):
                 value = IsInstanceValidator(value)
@@ -298,7 +298,7 @@ class PayloadMapRule(ABCMessageRule):
 
     @classmethod
     async def match(cls, payload: dict, payload_map: PayloadMapStrict):
-        """ Matches payload with payload_map recursively """
+        """Matches payload with payload_map recursively"""
         for (k, validator) in payload_map:
             if k not in payload:
                 return False

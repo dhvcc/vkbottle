@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TYPE_CHECKING, Any, List, NoReturn, Optional, Union
+from typing import TYPE_CHECKING, Any, List, NoReturn, Optional
 
 if TYPE_CHECKING:
     from vkbottle_types.events import Event

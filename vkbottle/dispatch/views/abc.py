@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional, Set, Type, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Set, Type
 
 from vkbottle.api.abc import ABCAPI
 from vkbottle.dispatch.dispenser.abc import ABCStateDispenser
