@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional, Set, Type, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Set, Type
 
 from vkbottle.api.abc import ABCAPI
 from vkbottle.dispatch.dispenser.abc import ABCStateDispenser
@@ -9,7 +9,7 @@ from vkbottle.dispatch.return_manager import BaseReturnManager
 from vkbottle.modules import logger
 
 if TYPE_CHECKING:
-    from vkbottle_types.events import BaseGroupEvent, BaseUserEvent
+    from vkbottle_types.events import Event
 
 
 class ABCView(ABC):
@@ -31,7 +31,7 @@ class ABCView(ABC):
 
     async def pre_middleware(
         self,
-        event: Union["BaseGroupEvent", "BaseUserEvent"],
+        event: "Event",
         context_variables: Optional[dict] = None,
     ) -> Optional[Exception]:
         """Run all of the pre middleware methods and return an exception if any error occurs"""
