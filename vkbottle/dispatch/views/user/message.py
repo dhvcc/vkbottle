@@ -7,7 +7,7 @@ from vkbottle.dispatch.dispenser.abc import ABCStateDispenser
 from vkbottle.dispatch.return_manager.user import UserMessageReturnHandler
 from vkbottle.dispatch.views.abc.message import ABCMessageView
 from vkbottle.modules import logger
-from vkbottle.tools.dev_tools.mini_types.user import MessageMin, message_min
+from vkbottle.tools.dev.mini_types.user import MessageMin, message_min
 
 
 class ABCUserMessageView(ABCMessageView):
