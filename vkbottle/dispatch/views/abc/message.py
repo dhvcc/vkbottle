@@ -1,31 +1,43 @@
-from typing import Optional
-
-from vkbottle_types.events import UserEventType
+from abc import ABC, abstractmethod
+from typing import Callable, List, Optional
 
 from vkbottle.api.abc import ABCAPI
 from vkbottle.dispatch.dispenser.abc import ABCStateDispenser
-from vkbottle.dispatch.return_manager.user import UserMessageReturnHandler
-from vkbottle.dispatch.views.abc.message import ABCMessageView
 from vkbottle.modules import logger
-from vkbottle.tools.dev_tools.mini_types.user import MessageMin, message_min
+from vkbottle.tools.dev_tools.mini_types.user import MessageMin
+
+from .dispense import ABCDispenseView
+
+DEFAULT_STATE_KEY = "peer_id"
 
 
-class ABCUserMessageView(ABCMessageView):
+class ABCMessageView(ABCDispenseView, ABC):
+    state_source_key: str
+    default_text_approximators: List[Callable[[MessageMin], str]]
+
     def __init__(self):
         super().__init__()
-        self.handler_return_manager = UserMessageReturnHandler()
+        self.state_source_key = DEFAULT_STATE_KEY
+        self.default_text_approximators = []
 
-    async def process_event(self, event: int) -> bool:
-        return UserEventType(event) == UserEventType.NEW_MESSAGE
+    @staticmethod
+    @abstractmethod
+    def get_logger_event_value(event):
+        ...
+
+    @staticmethod
+    @abstractmethod
+    def get_message(event, ctx_api):
+        ...
 
     async def handle_event(
-        self, event: list, ctx_api: "ABCAPI", state_dispenser: "ABCStateDispenser"
+        self, event, ctx_api: "ABCAPI", state_dispenser: "ABCStateDispenser"
     ) -> None:
-        # For event mapping, consider checking out
-        # https://vk.com/dev/using_longpoll?f=3.%20Event%20Structure
-        logger.debug("Handling event ({}) with message view".format(event[0]))
+        logger.debug(
+            "Handling event ({}) with message view".format(self.get_logger_event_value(event))
+        )
         context_variables: dict = {}
-        message = await message_min(event[1], ctx_api)
+        message = self.get_message(event, ctx_api)
         message.state_peer = await state_dispenser.cast(self.get_state_key(message))
 
         for text_ax in self.default_text_approximators:
@@ -65,6 +77,6 @@ class ABCUserMessageView(ABCMessageView):
         await self.post_middleware(handle_responses, handlers)
 
 
-class MessageView(ABCUserMessageView):
+class MessageView(ABCMessageView):
     def get_state_key(self, message: MessageMin) -> Optional[int]:
         return getattr(message, self.state_source_key, None)
